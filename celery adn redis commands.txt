@@ -1,0 +1,3 @@
+celery -A face_attendace.celery worker --loglevel=info -P solo
+
+redis-server

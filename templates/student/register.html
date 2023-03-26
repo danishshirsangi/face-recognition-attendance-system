@@ -113,10 +113,11 @@
         formData.append('usn',usn[0].value);
         formData.append('dept',dept[0].value);
         formData.append('div',div[0].value);
+        console.log(window.location.host)
         axios({
             method: 'POST',
             data: formData,
-            url: 'http://127.0.0.1:8000/student/',
+            url: `http://${window.location.host}/student/`,
             config: {headers: {'Accept': 'application/json','Content-Type': 'multipart/form-data'}}
           }).then(() => {
             console.log('Form Submitted')

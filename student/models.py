@@ -34,6 +34,15 @@ class ModelTrained(models.Model):
     dept = models.ForeignKey(Department, on_delete=models.CASCADE)
     div = models.ForeignKey(Division, on_delete=models.CASCADE)
 
+class Classrooms(models.Model):
+    cno = models.CharField(max_length=3)
+    dept = models.ForeignKey(Department,on_delete=models.CASCADE)
+    div = models.ForeignKey(Division,on_delete=models.CASCADE)
+    cip = models.CharField(max_length=255)
+
+    def __str__(self) -> str:
+        return f"{str(self.cno)} - {self.dept} , {self.div}"
+
 class Student(models.Model):
     name = models.CharField(max_length=255)
     usn = models.CharField(max_length=255)

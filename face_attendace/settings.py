@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'staff',
     'student',
     'django_cleanup.apps.CleanupConfig',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
@@ -133,7 +134,9 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
+DATA_UPLOAD_MAX_MEMORY_SIZE = 50242880
 
 CELERY_BROKER_URL = "redis://localhost:6379"
 CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+#SECURE_CROSS_ORIGIN_OPENER_POLICY = None

@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/register.css'%}">
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.js"></script>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.js"></script>
     <title>Document</title>
 </head>
 <body>
@@ -58,22 +59,49 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js" integrity="sha512-QTnb9BQkG4fBYIt9JGvYmxPpd6TBeKp6lsUrtiVQsrJ9sb33Bn9s0wMQO9qVBFbPX3xHRAsBHvXlcsrnJjExjg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     // CAMERA SETTINGS.
-    stream =  navigator.mediaDevices.enumerateDevices()
-    console.log(stream)
+    //stream =  navigator.mediaDevices.enumerateDevices()
+    //console.log(stream)
+    const myFunc = async () => {
+        console.log("Hello")
+        let constraints = { 
+            audio: true, 
+            video: { 
+                width: { ideal: 1920 }, 
+                height: { ideal: 1080 } 
+            }
+        };
+    
+        let stream = await navigator.mediaDevices.getUserMedia(constraints);
+    
+        let stream_settings = stream.getVideoTracks()[0].getSettings();
+    
+        // actual width & height of the camera video
+        let stream_width = stream_settings.width;
+        let stream_height = stream_settings.height;
+        let widtH = stream_width
+        let heighT = stream_height
+        Webcam.set('constraints',{
+            deviceId: "a746183a6cd26552d0d949396183ace7dd2155f6585080cdfe51f4396fd954b6"
+        });
+    
+        
+        //WebCam Size
+        Webcam.set({
+            width: widtH,
+            height: heighT,
+            image_format: 'jpeg',
+            //force_flash: false,
+            jpeg_quality: 100
+        });
+        Webcam.attach('#camera');
+        return [widtH, heighT]
+    }
 
-    Webcam.set('constraints',{
-        deviceId: "a746183a6cd26552d0d949396183ace7dd2155f6585080cdfe51f4396fd954b6"
-    });
+    myFunc().then((res) => {
+        console.log(res)
+    })
 
-
-    //WebCam Size
-    Webcam.set({
-        width: 640,
-        height: 360,
-        image_format: 'jpeg',
-        jpeg_quality: 100
-    });
-    Webcam.attach('#camera');
+   
     let i = 1;
     // SHOW THE SNAPSHOT.
     var formData = new FormData()
@@ -117,7 +145,7 @@
         axios({
             method: 'POST',
             data: formData,
-            url: `http://${window.location.host}/student/`,
+            url: `https://${window.location.host}/student/`,
             config: {headers: {'Accept': 'application/json','Content-Type': 'multipart/form-data'}}
           }).then(() => {
             console.log('Form Submitted')

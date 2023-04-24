@@ -65,7 +65,8 @@ def registerStudent(name, usn, dept, div, imgs):
         file = TemporaryUploadedFile(name=nameF,content_type=ct,size=0,charset='base64')
         file.write(imageData)
         tempFiles.append(file)
-    
+
+  
     croppedFaces = []
     for img in tempFiles:
         fName = img.name

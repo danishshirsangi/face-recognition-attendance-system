@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/student/attendance.css'%}">
+    <link rel="stylesheet" href="{% static 'css/student/success.css'%}">
     <title>Document</title>
 </head>
 <body>
@@ -14,15 +14,10 @@
     </nav>
     
     <section>   
-        <img src="{% url 'vidfeed' dept=dept div=div %}"/>
+        <h2>Attendance Has Been Recorded Successfully!!</h2>
+        <p>The System will generate the report and will update to higher authorities.</p>
+        <a href="{% url 'classrooms'%}">Back to Home Page</a>
     </section>
-
-    <div class="button-holder">
-        <form action="" method="POST">
-            {% csrf_token%}
-            <input type="submit" value="Stop & Generate Report"/>
-        </form>
-    </div>
 
 </body>
 </html>

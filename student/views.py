@@ -10,16 +10,20 @@ from .tasks import registerStudent
 from .models import Student, Department, Division, TempFileTest, Classrooms
 from .predict import predict
 from .threading import CameraWidget
+import time
+
+s = {}
 
 def home_redirect(request):
     return redirect('studentregister')
 
-def gen_frames(model):
-    camera = cv2.VideoCapture(1)
-
+def gen_frames(model, dept ,div):
+    camera = cv2.VideoCapture(0)
+    global s
+    s[dept+div] = set()
     while True:
         _, frame = camera.read()
-        print(predict(frame, model))
+        s[dept+div].add(tuple(predict(frame, model)))
         #print(frame.shape)
         frame = cv2.imencode('.jpeg', frame)[1].tobytes()
         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
@@ -42,10 +46,14 @@ def vidfeed(request, dept, div):
     file.close()
     #t1.start()
     #print(t1)
-    return StreamingHttpResponse(gen_frames(model),content_type='multipart/x-mixed-replace; boundary=frame')
+    return StreamingHttpResponse(gen_frames(model, dept , div),content_type='multipart/x-mixed-replace; boundary=frame')
     #return StreamingHttpResponse(t1.gen_frames(),content_type='multipart/x-mixed-replace; boundary=frame')
 
 def test_page(request, dept, div):
+    if request.method == "POST":
+        global s
+        print(s.get(dept+div))
+        return redirect('success')
     return render(request, 'student/base.html', {"dept":dept, "div":div})
 
 def home_page(request):
@@ -71,6 +79,9 @@ def classromm_list(request):
     context = {}
     context['classrooms'] = Classrooms.objects.all()
     return render(request, 'student/classrooms.html', context)
+
+def success_page(request):
+    return render(request, 'student/success.html')
 
 def register_class(request):
     context = {}

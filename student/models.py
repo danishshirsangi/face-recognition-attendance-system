@@ -59,6 +59,23 @@ class Student(models.Model):
 
     def __str__(self) -> str:
         return self.usn
+    
+'''@receiver(post_save, sender=Student)
+def trainModelFunc(sender, instance, **kwargs):
+    from . tasks import trainModel
+    st = str(instance.img1.path)
+    st = r'{}'.format(st)
+    newSt = os.path.split(st)
+    train_dir = newSt[0]
+
+    model_dir = os.path.split(train_dir)[0]
+    for i in range(4):
+        newSt = os.path.split(newSt[0])
+
+    model_path = f"{newSt[0]}\\models\\{instance.dept}\\{instance.div}"
+    if not os.path.exists(model_path):
+        os.makedirs(model_path)
+    trainModel.delay(train_dir, instance.usn, model_path)'''
 
 @receiver(post_save, sender=Student)
 def trainModelFunc(sender, instance, **kwargs):

@@ -10,7 +10,8 @@ from .tasks import registerStudent
 from .models import Student, Department, Division, TempFileTest, Classrooms
 from .predict import predict
 from .threading import CameraWidget
-import time
+import datetime
+from openpyxl import Workbook
 
 s = {}
 
@@ -51,8 +52,16 @@ def vidfeed(request, dept, div):
 
 def test_page(request, dept, div):
     if request.method == "POST":
+        workbook = Workbook()
+        sheet = workbook.active
+        col = 1
         global s
-        print(s.get(dept+div))
+        attendances = s.get(dept+div)
+        for attende in attendances:
+            sheet['A'+str(col)] = attende[0]
+            sheet['B'+str(col)] = datetime.datetime.now().strftime('%H:%M:%S')
+            col += 1
+        workbook.save(filename="hello_world.xlsx")
         return redirect('success')
     return render(request, 'student/base.html', {"dept":dept, "div":div})
 

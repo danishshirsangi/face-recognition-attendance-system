@@ -1,6 +1,6 @@
 import face_recognition
 
-def predict(X_img_path, knn_clf=None, distance_threshold=0.7):
+def predict(X_img_path, knn_clf=None, distance_threshold=0.8):
     
     # Load image file and find face locations
     #X_img = face_recognition.load_image_file(X_img_path)

@@ -12,6 +12,7 @@ from .predict import predict
 from .threading import CameraWidget
 import datetime
 from openpyxl import Workbook, load_workbook
+from django.contrib.auth.decorators import login_required
 
 s = {}
 
@@ -19,7 +20,7 @@ def home_redirect(request):
     return redirect('studentregister')
 
 def gen_frames(model, dept ,div):
-    camera = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture(1, cv2.CAP_DSHOW)
     global s
     s[dept+div] = []
     while True:
@@ -35,6 +36,7 @@ def gen_frames(model, dept ,div):
             cv2.destroyAllWindows()
             break
 
+@login_required(login_url="/student/loginrequired/")
 def vidfeed(request, dept, div):
     for_path = Student.objects.all()[0]
     path_model = for_path.img1.path
@@ -51,6 +53,7 @@ def vidfeed(request, dept, div):
     return StreamingHttpResponse(gen_frames(model, dept , div),content_type='multipart/x-mixed-replace; boundary=frame')
     #return StreamingHttpResponse(t1.gen_frames(),content_type='multipart/x-mixed-replace; boundary=frame')
 
+@login_required(login_url="/student/loginrequired/")
 def test_page(request, dept, div):
     workbook_name = 'attendance_xl.xlsx'
 
@@ -71,6 +74,9 @@ def test_page(request, dept, div):
 
         dics = {}
 
+
+        #[['2JR19CS041','2JR20CS413'], '21:18:13', '05/12/2023']
+
         for each_frame in attendances:
             for usn in each_frame[0]:
                 dics[usn] = [each_frame[1]]
@@ -90,7 +96,11 @@ def test_page(request, dept, div):
                     worksheet['B'+str(endcell_index)].value = dics[dic_usn][0]
                     worksheet['C'+str(endcell_index)].value = 1
 
+        cnt = 0
         for i in range(worksheet.max_row):
+            if cnt == 0:
+                cnt += 1
+                continue
             if worksheet['D'+str(i+1)].value is not None:
                 worksheet['D'+str(i+1)].value = worksheet['D'+str(i+1)].value + 1
             else:
@@ -156,14 +166,18 @@ def student_home(request):
         return redirect('studentregister')
     return render(request, 'student/register.html', context)
 
+@login_required(login_url="/student/loginrequired/")
 def classromm_list(request):
     context = {}
     context['classrooms'] = Classrooms.objects.all()
     return render(request, 'student/classrooms.html', context)
 
+
+@login_required(login_url="/student/loginrequired/")
 def success_page(request):
     return render(request, 'student/success.html')
 
+@login_required(login_url="/student/loginrequired/")
 def register_class(request):
     context = {}
     context['classrooms'] = Classrooms.objects.all()
@@ -185,3 +199,5 @@ def register_class(request):
         return redirect('classrooms')
     return render(request, 'student/registerclass.html', context)
 
+def login_mandatory(request):
+    return render(request, 'student/logrequire.html')
